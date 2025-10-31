@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思念弹窗</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+        }
+        .note {
+            position: absolute;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-family: "微软雅黑", sans-serif;
+            cursor: move;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .heart-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 300px;
+            height: 300px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b8b'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center;
+            background-size: contain;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 107, 139, 0.8);
+            opacity: 0;
+            transition: all 1s ease;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-popup" id="heartPopup">我想你了杨玉婷</div>
+    <script>
+        const tips = [
+            "我想你了",
+            "每天都要元气满满",
+            "好好爱自己",
+            "保持微笑呀",
+            "今天过得开心嘛",
+            "期待下一次见面",
+            "别熬夜",
+            "多喝水利",
+            "天冷了，多穿衣服",
+            "梦想成真",
+            "所有烦恼都消失",
+            "记得吃水果",
+            "早点休息",
+            "保持好心情",
+            "顺顺利利"
+        ];
+
+        const colors = [
+            "#ff6b8b", "#45b7d1", "#a2e074", "#f9d276", 
+            "#c792ea", "#ff8a5c", "#7fd1b9", "#f075e9",
+            "#ffd700", "#87ceeb", "#d8bfd8", "#90ee90",
+            "#ffa07a", "#add8e6"
+        ];
+
+        let noteCount = 0;
+        const maxNotes = 30; // 可调整最大弹窗数量
+        const notes = [];
+
+        function createNote() {
+            if (noteCount >= maxNotes) return;
+
+            const note = document.createElement("div");
+            note.className = "note";
+            
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            note.textContent = randomTip;
+            note.style.backgroundColor = randomColor;
+            
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 100);
+            note.style.left = `${x}px`;
+            note.style.top = `${y}px`;
+            
+            const fontSize = 14 + Math.random() * 8;
+            note.style.fontSize = `${fontSize}px`;
+            
+            document.body.appendChild(note);
+            notes.push(note);
+            noteCount++;
+
+            // 淡入效果
+            setTimeout(() => {
+                note.style.opacity = 1;
+                note.style.transform = "scale(1)";
+            }, 50);
+
+            // 自动关闭
+            setTimeout(() => {
+                note.style.opacity = 0;
+                note.style.transform = "scale(0.5)";
+                setTimeout(() => {
+                    note.remove();
+                    noteCount--;
+                    const index = notes.indexOf(note);
+                    if (index > -1) {
+                        notes.splice(index, 1);
+                    }
+                }, 500);
+            }, 10000); // 10秒后消失
+
+            // 拖拽功能
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            note.addEventListener("mousedown", (e) => {
+                isDragging = true;
+                offsetX = e.clientX - note.getBoundingClientRect().left;
+                offsetY = e.clientY - note.getBoundingClientRect().top;
+                note.style.zIndex = 999;
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (isDragging) {
+                    note.style.left = `${e.clientX - offsetX}px`;
+                    note.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener("mouseup", () => {
+                isDragging = false;
+                note.style.zIndex = 1;
+            });
+        }
+
+        // 持续创建弹窗，直到达到最大数量
+        const interval = setInterval(() => {
+            if (noteCount < maxNotes) {
+                createNote();
+            } else {
+                clearInterval(interval);
+                // 所有弹窗开始消失后，显示大爱心弹窗
+                setTimeout(() => {
+                    const heartPopup = document.getElementById("heartPopup");
+                    heartPopup.style.opacity = 1;
+                    heartPopup.style.transform = "translate(-50%, -50%) scale(1)";
+                }, 1000);
+            }
+        }, 300);
+    </script>
+</body>
+</html>
