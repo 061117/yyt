@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>课间心动 | 双男主GALGAME</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0;
+            font-family: "Microsoft YaHei", sans-serif;
+            color: #333;
+        }
+        .game-container {
+            width: 800px;
+            height: 600px;
+            margin: 50px auto;
+            background: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .bg-image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .dialog-box {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+        .character-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #ffcc99;
+        }
+        .player-name {
+            color: #99ccff;
+        }
+        .dialog-text {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .choice-btn {
+            background: #4a90e2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: left;
+        }
+        .choice-btn:hover {
+            background: #3a7bd5;
+        }
+        .hidden {
+            display: none;
+        }
+        .name-input {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            z-index: 3;
+        }
+        .name-input h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .name-input input {
+            width: 200px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+        }
+        .name-input button {
+            background: #4a90e2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="name-input" id="nameInput">
+        <h2>请输入你的名字</h2>
+        <input type="text" id="playerName" placeholder="输入名字">
+        <button onclick="startGame()">开始游戏</button>
+    </div>
+
+    <div class="game-container" id="gameContainer" class="hidden">
+        <div class="bg-image" id="scene1" style="background-image: url('https://picsum.photos/id/1025/800/600');"></div>
+        <div class="dialog-box" id="dialog1">
+            <div class="character-name" id="name1">赵志刚</div>
+            <div class="dialog-text" id="text1"><span class="player-name" id="playerNameDisplay"></span>，你看这张自拍好不好看？刚才你突然靠过来，我都没准备好...</div>
+            <div class="choices" id="choices1">
+                <button class="choice-btn" onclick="choose(1, 'option1')">“挺好的，你的侧脸很有感觉。”</button>
+                <button class="choice-btn" onclick="choose(1, 'option2')">“下次提前说一声啊，我表情都僵了。”</button>
+            </div>
+        </div>
+
+        <div class="bg-image hidden" id="scene2" style="background-image: url('https://picsum.photos/id/1074/800/600');"></div>
+        <div class="dialog-box hidden" id="dialog2">
+            <div class="character-name" id="name2"><span class="player-name" id="playerNameDisplay2"></span></div>
+            <div class="dialog-text" id="text2">哦...是吗？我觉得...你笑起来的时候更招人喜欢。</div>
+            <div class="choices" id="choices2">
+                <button class="choice-btn" onclick="choose(2, 'option1')">（心跳加速）“你这家伙，突然说这个干什么...”</button>
+                <button class="choice-btn" onclick="choose(2, 'option2')">“谢谢啊，不过你平时少看点偶像剧吧。”</button>
+            </div>
+        </div>
+
+        <div class="bg-image hidden" id="scene3" style="background-image: url('https://picsum.photos/id/1080/800/600');"></div>
+        <div class="dialog-box hidden" id="dialog3">
+            <div class="character-name" id="name3">赵志刚</div>
+            <div class="dialog-text" id="text3">哈哈，被你发现了。不过我说的是真的，周末的动漫展，一起去吗？顺便...再拍点照片？</div>
+            <div class="choices" id="choices3">
+                <button class="choice-btn" onclick="choose(3, 'option1')">“好啊，早就想去了，顺便给你拍组cosplay大片。”</button>
+                <button class="choice-btn" onclick="choose(3, 'option2')">“动漫展人太多了，还是算了吧。”</button>
+            </div>
+        </div>
+
+        <div class="bg-image hidden" id="scene4" style="background-image: url('https://picsum.photos/id/1062/800/600');"></div>
+        <div class="dialog-box hidden" id="dialog4">
+            <div class="character-name" id="name4"><span class="player-name" id="playerNameDisplay4"></span></div>
+            <div class="dialog-text" id="text4">知道了，下次我会注意。不过...上次你说喜欢的那款游戏，新DLC出了，一起玩吗？</div>
+            <div class="choices" id="choices4">
+                <button class="choice-btn" onclick="choose(4, 'option1')">“当然！早就等着了，今晚就上线！”</button>
+                <button class="choice-btn" onclick="choose(4, 'option2')">“今晚有点事，下次吧。”</button>
+            </div>
+        </div>
+
+        <div class="bg-image hidden" id="scene5" style="background-image: url('https://picsum.photos/id/1076/800/600');"></div>
+        <div class="dialog-box hidden" id="dialog5">
+            <div class="character-name" id="name5">赵志刚</div>
+            <div class="dialog-text" id="text5">那...这周末的线下比赛，你也一起来看吧？我知道你喜欢那个战队。</div>
+            <div class="choices" id="choices5">
+                <button class="choice-btn" onclick="end('good')">“必须去！还要给你买应援物呢。”</button>
+                <button class="choice-btn" onclick="end('normal')">“看情况吧，先把游戏DLC通了再说。”</button>
+            </div>
+        </div>
+
+        <div class="bg-image hidden" id="scene6" style="background-image: url('https://picsum.photos/id/1082/800/600');"></div>
+        <div class="dialog-box hidden" id="dialog6">
+            <div class="character-name" id="name6"><span class="player-name" id="playerNameDisplay6"></span></div>
+            <div class="dialog-text" id="text6">那...下次有新游戏上线，再叫我吧。</div>
+            <div class="choices" id="choices6">
+                <button class="choice-btn" onclick="end('normal')">“行，到时候一起。”</button>
+                <button class="choice-btn" onclick="end('bad')">“再说吧，我不一定有时间。”</button>
+            </div>
+        </div>
+
+        <div class="dialog-box hidden" id="ending1">
+            <div class="character-name">结局：心动漫展</div>
+            <div class="dialog-text">在动漫展上，你给赵志刚拍了很多照片，他穿着喜欢的角色服装，在镜头前笑得格外灿烂。回去的路上，他突然递给你一个印有你们合照的徽章：“这个...送你。” 你看着徽章上两人的笑脸，感觉心跳比逛展时还要快。也许，这份喜欢，早就超越了朋友的界限。</div>
+        </div>
+
+        <div class="dialog-box hidden" id="ending2">
+            <div class="character-name">结局：友达以上</div>
+            <div class="dialog-text">你们依然是最好的朋友，一起打游戏、聊动漫，偶尔也会互相吐槽。那张自拍成了你们的聊天背景，每次打开对话框，都会想起那个有点慌乱又有点心动的课间。你们谁都没说破，但这份默契和陪伴，已经是青春里最温暖的色彩。</div>
+        </div>
+
+        <div class="dialog-box hidden" id="ending3">
+            <div class="character-name">结局：游戏战友</div>
+            <div class="dialog-text">虽然没答应去动漫展，但你们成了游戏里的最佳拍档。每次新游戏上线，你们都会第一时间一起探索。某天深夜通关后，赵志刚发来消息：“下次...就算不喜欢动漫展，一起去吃个宵夜也行。” 你看着屏幕，忍不住笑了。原来，友谊也可以这么让人安心。</div>
+        </div>
+    </div>
+
+    <script>
+        let playerName = "";
+
+        function startGame() {
+            playerName = document.getElementById("playerName").value || "你";
+            document.getElementById("playerNameDisplay").textContent = playerName;
+            document.getElementById("playerNameDisplay2").textContent = playerName;
+            document.getElementById("playerNameDisplay4").textContent = playerName;
+            document.getElementById("playerNameDisplay6").textContent = playerName;
+            document.getElementById("nameInput").classList.add("hidden");
+            document.getElementById("gameContainer").classList.remove("hidden");
+        }
+
+        function choose(dialogNum, option) {
+            document.getElementById(`dialog${dialogNum}`).classList.add('hidden');
+            document.getElementById(`scene${dialogNum}`).classList.add('hidden');
+            
+            if (dialogNum === 1) {
+                if (option === 'option1') {
+                    document.getElementById('scene2').classList.remove('hidden');
+                    document.getElementById('dialog2').classList.remove('hidden');
+                } else {
+                    document.getElementById('scene4').classList.remove('hidden');
+                    document.getElementById('dialog4').classList.remove('hidden');
+                }
+            } else if (dialogNum === 2) {
+                document.getElementById('scene3').classList.remove('hidden');
+                document.getElementById('dialog3').classList.remove('hidden');
+            } else if (dialogNum === 3) {
+                if (option === 'option1') {
+                    document.getElementById('scene5').classList.remove('hidden');
+                    document.getElementById('dialog5').classList.remove('hidden');
+                } else {
+                    document.getElementById('scene6').classList.remove('hidden');
+                    document.getElementById('dialog6').classList.remove('hidden');
+                }
+            } else if (dialogNum === 4) {
+                if (option === 'option1') {
+                    document.getElementById('scene5').classList.remove('hidden');
+                    document.getElementById('dialog5').classList.remove('hidden');
+                } else {
+                    document.getElementById('scene6').classList.remove('hidden');
+                    document.getElementById('dialog6').classList.remove('hidden');
+                }
+            }
+        }
+
+        function end(endingType) {
+            document.getElementById('dialog1').classList.add('hidden');
+            document.getElementById('dialog2').classList.add('hidden');
+            document.getElementById('dialog3').classList.add('hidden');
+            document.getElementById('dialog4').classList.add('hidden');
+            document.getElementById('dialog5').classList.add('hidden');
+            document.getElementById('dialog6').classList.add('hidden');
+            document.getElementById('scene1').classList.add('hidden');
+            document.getElementById('scene2').classList.add('hidden');
+            document.getElementById('scene3').classList.add('hidden');
+            document.getElementById('scene4').classList.add('hidden');
+            document.getElementById('scene5').classList.add('hidden');
+            document.getElementById('scene6').classList.add('hidden');
+            
+            if (endingType === 'good') {
+                document.getElementById('ending1').classList.remove('hidden');
+            } else if (endingType === 'normal') {
+                document.getElementById('ending2').classList.remove('hidden');
+            } else if (endingType === 'bad') {
+                document.getElementById('ending3').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
